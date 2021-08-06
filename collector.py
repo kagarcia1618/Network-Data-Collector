@@ -59,35 +59,32 @@ if __name__ == '__main__':
     for i in cmd_list:
         if i[0] == 'nxos':
             if i[1] == 'cfg':
-                nxos_cmd_cfg.append(i)
+                nxos_cmd_cfg.append(i[2])
             else:
-                nxos_cmd_log.append(i)
+                nxos_cmd_log.append(i[2])
         elif i[0] == 'ios':
             if i[1] == 'cfg':
-                ios_cmd_cfg.append(i)
+                ios_cmd_cfg.append(i[2])
             else:
-                ios_cmd_log.append(i)
+                ios_cmd_log.append(i[2])
         elif i[0] == 'ios-xr':
             if i[1] == 'cfg':
-                iosxr_cmd_cfg.append(i)
+                iosxr_cmd_cfg.append(i[2])
             else:
-                iosxr_cmd_log.append(i)
+                iosxr_cmd_log.append(i[2])
         elif i[0] == 'junos':
             if i[1] == 'cfg':
-                junos_cmd_cfg.append(i)
+                junos_cmd_cfg.append(i[2])
             else:
-                junos_cmd_log.append(i)
+                junos_cmd_log.append(i[2])
     
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
-    futures = [
-        executor.submit(
-            nxapi_cli, 
-            node,
-            cli_cmd=nxos_cmd_cfg,
-            cli_type='cli_show_ascii',
-            username=username,
-            password=password,
-            mode='cfg'
-        ) for node in nxos_device
-    ]
+    futures = [executor.submit(
+        nxapi_cli, 
+        node,
+        nxos_cmd_cfg,
+        'cli_show_ascii',
+        username,
+        password,
+        'cfg') for node in nxos_device]
     concurrent.futures.wait(futures)
