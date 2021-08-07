@@ -49,7 +49,9 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
         return print(f'{node[1]} {mode} collection success!')
     
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
+        print('before napalm ssh')
         napalm_ssh('nxos_ssh',node,cli_cmd,username,password,mode)
+        print('after napalm ssh')
         #wr_file = open( 'logs/' + node[1] + '_' + node[2] + '_' + timestamp + '.' + mode, 'w' )
         #wr_file.write(str(error))
         #wr_file.close()
