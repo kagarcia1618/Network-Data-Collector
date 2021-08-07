@@ -106,6 +106,7 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in ios_device]
+    concurrent.futures.wait(futures_ios_cfg)
     futures_ios_log = [executor.submit(
         napalm_ssh,
         'ios',
@@ -114,7 +115,7 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in ios_device]
-    concurrent.futures.wait(futures_ios_cfg+futures_ios_log)
+    concurrent.futures.wait(futures_ios_log)
 
     #Multithreading for IOS-XR
     futures_iosxr_cfg = [executor.submit(
@@ -125,6 +126,7 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in iosxr_device]
+    concurrent.futures.wait(futures_iosxr_cfg)
     futures_iosxr_log = [executor.submit(
         napalm_ssh,
         'ios-xr',
@@ -133,7 +135,7 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in iosxr_device]
-    concurrent.futures.wait(futures_iosxr_cfg+futures_iosxr_log)
+    concurrent.futures.wait(futures_iosxr_log)
 
     #Multithreading for JUNOS
     futures_junos_cfg = [executor.submit(
