@@ -78,6 +78,7 @@ if __name__ == '__main__':
             else:
                 junos_cmd_log.append(i[2])
     
+    #Multithreading for NXOS
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
     futures = [executor.submit(
         nxapi_cli, 
@@ -88,6 +89,17 @@ if __name__ == '__main__':
         password,
         'cfg') for node in nxos_device]
     concurrent.futures.wait(futures)
+    futures = [executor.submit(
+        nxapi_cli, 
+        node,
+        nxos_cmd_log,
+        'cli_show_ascii',
+        username,
+        password,
+        'log') for node in nxos_device]
+    concurrent.futures.wait(futures)
+
+    #Multithreading for IOS
     futures = [executor.submit(
         napalm_ssh,
         'ios',
@@ -106,3 +118,42 @@ if __name__ == '__main__':
         password,
         'log') for node in ios_device]
     concurrent.futures.wait(futures)
+
+    #Multithreading for IOS-XR
+    futures = [executor.submit(
+        napalm_ssh,
+        'ios-xr',
+        node,
+        iosxr_cmd_cfg,
+        username,
+        password,
+        'cfg') for node in iosxr_device]
+    concurrent.futures.wait(futures)
+    futures = [executor.submit(
+        napalm_ssh,
+        'ios-xr',
+        node,
+        ios_cmd_log,
+        username,
+        password,
+        'log') for node in iosxr_device]
+    concurrent.futures.wait(futures)
+
+    #Multithreading for JUNOS
+    futures = [executor.submit(
+        napalm_ssh,
+        'junos',
+        node,
+        junos_cmd_cfg,
+        username,
+        password,
+        'cfg') for node in junos_device]
+    concurrent.futures.wait(futures)
+    futures = [executor.submit(
+        napalm_ssh,
+        'junos',
+        node,
+        junos_cmd_log,
+        username,
+        password,
+        'log') for node in junos_device]    
