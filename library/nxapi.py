@@ -15,14 +15,14 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
     '''
     timestamp = datetime.now().strftime("%d%b%Y")
     url = 'https://{}/ins'.format(node[2])
-    cli_cmd = ' ;'.join(cli_cmd)
+    cli_cmd_str = ' ;'.join(cli_cmd)
     payload = {
         "ins_api":{
             "version": "1.0",
             "type": cli_type,
             "chunk": "0",
             "sid": "1",
-            "input": cli_cmd,
+            "input": cli_cmd_str,
             "output_format": "json"
         }
     }

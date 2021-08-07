@@ -1,7 +1,6 @@
 from datetime import datetime
 from napalm import get_network_driver
 from napalm.base.exceptions import ConnectionException
-from library.encrypt import decrypt_message
 
 def napalm_ssh(driver,node,cli_cmd,username,password,mode):
     '''
