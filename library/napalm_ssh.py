@@ -1,22 +1,29 @@
+from datetime import datetime
 from napalm import get_network_driver
 from napalm.base.exceptions import ConnectionException
-from .encrypt import decrypt_message
+from library.encrypt import decrypt_message
 
-def napalm_ssh(Driver,Mgmt_ip,Command):
+def napalm_ssh(driver,node,cli_cmd,username,password,mode):
     '''
     driver - device napalm network driver
     mgmt_ip - device management ip address
-    command - device command to be executed
+    cli_cmd - device cli_cmd to be executed
     '''
-    driver = get_network_driver(Driver)
-    credential = open('utilities/login_credentials.txt', 'r').read().splitlines()
-    username = decrypt_message(credential[0].encode())
-    password = decrypt_message(credential[1].encode())
-    device = driver(Mgmt_ip, username, password)
+    timestamp = datetime.now().strftime("%d%b%Y")
+    net_driver = get_network_driver(driver)
+    device = net_driver(node[2], username, password)
     try:
         device.open()
-        output = device.cli(Command)
+        output = device.cli(cli_cmd)
         device.close()
+
+        wr_file = open( 'logs/' + node[1] + '_' + node[2] + '_' + timestamp + '.' + mode, 'w' )
+        for i in output:
+            wr_file.write( i + '\n' + output[i] + '\n')
+        wr_file.close()
+
     except (ConnectionException) as error:
-        output = error    
-    return
+        wr_file = open( 'logs/' + node[1] + '_' + node[2] + '_' + timestamp + '.' + mode, 'w' )
+        wr_file.write(str(error))
+        wr_file.close()
+    return output

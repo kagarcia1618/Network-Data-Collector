@@ -88,3 +88,21 @@ if __name__ == '__main__':
         password,
         'cfg') for node in nxos_device]
     concurrent.futures.wait(futures)
+    futures = [executor.submit(
+        napalm_ssh,
+        'ios',
+        node,
+        ios_cmd_cfg,
+        username,
+        password,
+        'cfg') for node in ios_device]
+    concurrent.futures.wait(futures)
+    futures = [executor.submit(
+        napalm_ssh,
+        'ios',
+        node,
+        ios_cmd_log,
+        username,
+        password,
+        'log') for node in ios_device]
+    concurrent.futures.wait(futures)
