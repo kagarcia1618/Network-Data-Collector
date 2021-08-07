@@ -142,7 +142,6 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in junos_device]
-    concurrent.futures.wait(futures)
     futures_junos_log = [executor.submit(
         napalm_ssh,
         'junos',
