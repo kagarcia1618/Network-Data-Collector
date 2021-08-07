@@ -2,7 +2,7 @@ import json
 import requests
 import urllib3
 from datetime import datetime
-from .napalm_ssh import napalm_ssh
+from library.napalm_ssh import napalm_ssh
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
