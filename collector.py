@@ -171,5 +171,21 @@ if __name__ == '__main__':
 
     concurrent.futures.wait(futures)
 
-    futures_ios_iosxr = futures_ios_log + futures_iosxr_log
-    concurrent.futures.wait(futures_ios_iosxr)
+    futures_ios_log = [executor.submit(
+        napalm_ssh,
+        'ios',
+        node,
+        ios_cmd_log,
+        username,
+        password,
+        'log') for node in ios_device]
+    futures_iosxr_log = [executor.submit(
+        napalm_ssh,
+        'ios-xr',
+        node,
+        ios_cmd_log,
+        username,
+        password,
+        'log') for node in iosxr_device]
+    futures = futures_ios_log + futures_iosxr_log
+    concurrent.futures.wait(futures)
