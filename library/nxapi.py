@@ -2,6 +2,7 @@ import json
 import requests
 import urllib3
 from datetime import datetime
+from .napalm_ssh import napalm_ssh
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -48,7 +49,8 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
         return print(f'{node[1]} {mode} collection success!')
     
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
-        wr_file = open( 'logs/' + node[1] + '_' + node[2] + '_' + timestamp + '.' + mode, 'w' )
-        wr_file.write(str(error))
-        wr_file.close()
-        return print(f'{node[1]} {mode} collection failed!')
+        napalm_ssh('nxos_ssh',node,cli_cmd,username,password,mode)
+        #wr_file = open( 'logs/' + node[1] + '_' + node[2] + '_' + timestamp + '.' + mode, 'w' )
+        #wr_file.write(str(error))
+        #wr_file.close()
+        #return print(f'{node[1]} {mode} collection failed!')
