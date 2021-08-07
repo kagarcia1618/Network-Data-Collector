@@ -171,5 +171,5 @@ if __name__ == '__main__':
 
     concurrent.futures.wait(futures)
 
-    futures = futures_ios_log + futures_iosxr_log
-    concurrent.futures.wait(futures)
+    futures_ios_iosxr = futures_ios_log + futures_iosxr_log
+    concurrent.futures.wait(futures_ios_iosxr)
