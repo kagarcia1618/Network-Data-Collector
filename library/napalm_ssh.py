@@ -26,4 +26,4 @@ def napalm_ssh(driver,node,cli_cmd,username,password,mode):
         wr_file = open( 'logs/' + node[1] + '_' + node[2] + '_' + timestamp + '.' + mode, 'w' )
         wr_file.write(str(error))
         wr_file.close()
-    return output
+    return print( node[1] + 'completed' )

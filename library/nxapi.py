@@ -51,4 +51,4 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
         wr_file.write(str(error))
         wr_file.close()
 
-    return
+    return print( node[1] + 'completed' )
