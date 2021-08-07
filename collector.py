@@ -80,7 +80,7 @@ if __name__ == '__main__':
     
     #Multithreading for NXOS
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
-    futures = [executor.submit(
+    futures_nxos_cfg = [executor.submit(
         nxapi_cli, 
         node,
         nxos_cmd_cfg,
@@ -88,8 +88,7 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in nxos_device]
-    concurrent.futures.wait(futures)
-    futures = [executor.submit(
+    futures_nxos_log = [executor.submit(
         nxapi_cli, 
         node,
         nxos_cmd_log,
@@ -97,10 +96,9 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in nxos_device]
-    concurrent.futures.wait(futures)
 
     #Multithreading for IOS
-    futures = [executor.submit(
+    futures_ios_cfg = [executor.submit(
         napalm_ssh,
         'ios',
         node,
@@ -108,8 +106,7 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in ios_device]
-    concurrent.futures.wait(futures)
-    futures = [executor.submit(
+    futures_ios_log = [executor.submit(
         napalm_ssh,
         'ios',
         node,
@@ -117,10 +114,9 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in ios_device]
-    concurrent.futures.wait(futures)
 
     #Multithreading for IOS-XR
-    futures = [executor.submit(
+    futures_iosxr_cfg = [executor.submit(
         napalm_ssh,
         'ios-xr',
         node,
@@ -128,8 +124,7 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in iosxr_device]
-    concurrent.futures.wait(futures)
-    futures = [executor.submit(
+    futures_iosxr_log = [executor.submit(
         napalm_ssh,
         'ios-xr',
         node,
@@ -137,10 +132,9 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in iosxr_device]
-    concurrent.futures.wait(futures)
 
     #Multithreading for JUNOS
-    futures = [executor.submit(
+    futures_junos_cfg = [executor.submit(
         napalm_ssh,
         'junos',
         node,
@@ -149,11 +143,17 @@ if __name__ == '__main__':
         password,
         'cfg') for node in junos_device]
     concurrent.futures.wait(futures)
-    futures = [executor.submit(
+    futures_junos_log = [executor.submit(
         napalm_ssh,
         'junos',
         node,
         junos_cmd_log,
         username,
         password,
-        'log') for node in junos_device]    
+        'log') for node in junos_device]
+    
+    futures = futures_nxos_cfg + futures_nxos_log +\
+        futures_ios_cfg + futures_ios_log +\
+        futures_iosxr_cfg + futures_iosxr_log +\
+        futures_junos_cfg + futures_junos_log 
+    concurrent.futures.wait(futures)
