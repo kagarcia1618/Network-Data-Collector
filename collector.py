@@ -46,6 +46,11 @@ if __name__ == '__main__':
     junos_cmd_cfg = []
     junos_cmd_log = []
 
+    #nxos_cmd = []
+    #ios_cmd = []
+    #iosxr_cmd = []
+    #junos_cmd = []
+
     for i in node_list:
         if i[0] == 'nxos':
             nxos_device.append(i)
@@ -77,7 +82,7 @@ if __name__ == '__main__':
                 junos_cmd_cfg.append(i[2])
             else:
                 junos_cmd_log.append(i[2])
-    
+
     #Multithreading for NXOS
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
     futures_nxos_cfg = [executor.submit(
@@ -106,7 +111,7 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in ios_device]
-    concurrent.futures.wait(futures_ios_cfg)
+    #concurrent.futures.wait(futures_ios_cfg)
     futures_ios_log = [executor.submit(
         napalm_ssh,
         'ios',
@@ -115,7 +120,7 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in ios_device]
-    concurrent.futures.wait(futures_ios_log)
+    #concurrent.futures.wait(futures_ios_log)
 
     #Multithreading for IOS-XR
     futures_iosxr_cfg = [executor.submit(
@@ -126,7 +131,7 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in iosxr_device]
-    concurrent.futures.wait(futures_iosxr_cfg)
+    #concurrent.futures.wait(futures_iosxr_cfg)
     futures_iosxr_log = [executor.submit(
         napalm_ssh,
         'ios-xr',
@@ -135,7 +140,7 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in iosxr_device]
-    concurrent.futures.wait(futures_iosxr_log)
+    #concurrent.futures.wait(futures_iosxr_log)
 
     #Multithreading for JUNOS
     futures_junos_cfg = [executor.submit(
@@ -156,11 +161,15 @@ if __name__ == '__main__':
         'log') for node in junos_device]
     
     futures = futures_nxos_cfg + futures_nxos_log +\
-        futures_junos_cfg + futures_junos_log
+        futures_junos_cfg + futures_junos_log +\
+        futures_ios_cfg + futures_iosxr_cfg
     
     #futures = futures_nxos_cfg + futures_nxos_log +\
     #    futures_ios_cfg + futures_ios_log +\
     #    futures_iosxr_cfg + futures_iosxr_log +\
     #    futures_junos_cfg + futures_junos_log 
 
+    concurrent.futures.wait(futures)
+
+    futures = futures_ios_log + futures_iosxr_log
     concurrent.futures.wait(futures)
