@@ -164,7 +164,7 @@ if __name__ == '__main__':
         password,
         'log') for node in junos_device]
     
-    futures = futures_ios_log + futures_iosxr_log + futures_nxos_log + futures_junos_log
+    futures = futures_nxos_log + futures_ios_log + futures_iosxr_log + futures_junos_log
 
     concurrent.futures.wait(futures)
 
