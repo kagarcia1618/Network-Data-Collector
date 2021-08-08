@@ -130,6 +130,7 @@ if __name__ == '__main__':
     
     concurrent.futures.wait(futures)
 
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
     futures_nxos_log = [executor.submit(
         nxapi_cli, 
         node,
