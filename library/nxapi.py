@@ -46,7 +46,8 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
         else:
             wr_file.write( output['input'] + '\n' + output['body'] + '\n')
         wr_file.close()
-        return print(f'  {node[1]} {mode} collection success!')
+        return print(f'  {node[1]} {mode} via nxapi data collection success!')
     
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
+        print(f'{node[1]} {mode} via nxapi data collection failed! Now trying via napalm ssh..')
         napalm_ssh('nxos_ssh',node,cli_cmd,username,password,mode)

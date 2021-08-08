@@ -187,7 +187,9 @@ if __name__ == '__main__':
 
     end_time = datetime.now()
     total_time = (end_time - start_time).seconds
-    print('\n**************** E N D  O F  T H E  S C R I P T ****************\n')
+    print('\n****************** E N D  O F  T H E  S C R I P T ******************\n')
     print('  Start time : ' + start_time.strftime("%d %b %Y - %H:%M:%S"))
     print('  End time : ' + end_time.strftime("%d %b %Y - %H:%M:%S"))
     print('  Total time : ' + str(total_time//60) + ' minute/s and ' + str(total_time%60) + ' second/s')
+    print('\n********************************************************************\n')
+
