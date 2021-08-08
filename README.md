@@ -24,6 +24,7 @@
         ```
         cat > device_list.txt
         ios r1 192.168.0.1
+        nxos leaf1 192.168.0.2
         ```      
 
     - Command list
@@ -33,6 +34,11 @@
         ```
         cat > command_list.txt
         ios,cfg,show run
+        ios,log,show version
+        ios,log,show inventory
+        nxos,cfg,show run
+        nxos,log,show version
+        nxos,log,show l2route evpn mac-ip all
         ```
         **Note:** Maximum of 10 command lines only for nxos device type
     
@@ -58,6 +64,14 @@
    ```
    source venv/bin/activate
    python collector.py
+   ```
+
+7. Verify that collected cfg and log data has been stored in `logs` directory.
+
+   Log file format:
+   ```
+   {hostname}_{ip address}_{ddmmmyyyy}.cfg
+   {hostname}_{ip address}_{ddmmmyyyy}.log
    ```
 
 
