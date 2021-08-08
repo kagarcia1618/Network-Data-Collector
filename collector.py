@@ -207,8 +207,28 @@ if __name__ == '__main__':
         password,
         'log') for node in junos_device]
 
-    futures = futures_nxos_cfg + futures_junos_cfg + futures_ios_cfg + futures_iosxr_cfg +\
-        futures_nxos_log + futures_junos_log
+    futures_ios_log = [executor.submit(
+        napalm_ssh,
+        'ios',
+        node,
+        ios_cmd_log,
+        username,
+        password,
+        'log') for node in ios_device]
+    futures_iosxr_log = [executor.submit(
+        napalm_ssh,
+        'iosxr',
+        node,
+        iosxr_cmd_log,
+        username,
+        password,
+        'log') for node in iosxr_device]
+    
+    futures = futures_nxos_cfg + futures_junos_cfg +\
+        futures_ios_cfg + futures_iosxr_cfg +\
+        futures_nxos_log + futures_junos_log +\
+        futures_ios_log + futures_iosxr_log
+    
     concurrent.futures.wait(futures)
 
     futures_ios_log = [executor.submit(
@@ -219,7 +239,6 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in ios_device]
-    concurrent.futures.wait(futures_ios_log)
     futures_iosxr_log = [executor.submit(
         napalm_ssh,
         'iosxr',
@@ -228,7 +247,6 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in iosxr_device]
-    concurrent.futures.wait(futures_iosxr_log)
 
     end_time = datetime.now()
     total_time = (end_time - start_time).seconds
