@@ -139,6 +139,9 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in nxos_device]
+    concurrent.futures.wait(futures_nxos_log)
+
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
     futures_ios_log = [executor.submit(
         napalm_ssh,
         'ios',
@@ -164,7 +167,7 @@ if __name__ == '__main__':
         password,
         'log') for node in junos_device]
     
-    futures = futures_nxos_log + futures_ios_log + futures_iosxr_log + futures_junos_log
+    futures = futures_ios_log + futures_iosxr_log + futures_junos_log
 
     concurrent.futures.wait(futures)
 
