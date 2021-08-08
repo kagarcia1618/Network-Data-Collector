@@ -66,7 +66,7 @@
    python collector.py
    ```
 
-7. Verify that collected cfg and log data has been stored in `logs` directory.
+7. Verify that the collected cfg and log data has been stored in `logs` directory.
 
    Log file format:
    ```
