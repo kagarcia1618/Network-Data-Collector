@@ -36,12 +36,10 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
             headers=header,
             auth=(username,password)
         ).json()
-
         output = response['ins_api']['outputs']['output']
-
         wr_file = open( 'logs/' + node[1] + '_' + node[2] + '_' + timestamp + '.' + mode, 'w' )
         if type(output) == list:
-            for i in output:
+            for i in range(len(output)):
                 wr_file.write( output[i]['input'] + '\n' + output[i]['body'] + '\n')
         else:
             wr_file.write( output['input'] + '\n' + output['body'] + '\n')
