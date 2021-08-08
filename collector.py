@@ -46,11 +46,6 @@ if __name__ == '__main__':
     junos_cmd_cfg = []
     junos_cmd_log = []
 
-    #nxos_cmd = []
-    #ios_cmd = []
-    #iosxr_cmd = []
-    #junos_cmd = []
-
     for i in node_list:
         if i[0] == 'nxos':
             nxos_device.append(i)
@@ -83,6 +78,13 @@ if __name__ == '__main__':
             else:
                 junos_cmd_log.append(i[2])
 
+    #Zip the config files and move to archive folder
+    system('zip -R $(echo cfg_backup_$(date +%d%b%Y)) logs/*.cfg && mv *.zip logs/archive/')
+    #Zip the logs files and move to archive folder
+    system('zip -R $(echo log_backup_$(date +%d%b%Y)) logs/*.log && mv *.zip logs/archive/')
+    #Deletes all config and log files
+    system('rm logs/*.cfg && rm logs/*.log')
+
     #Multithreading for NXOS
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
     futures_nxos_cfg = [executor.submit(
@@ -111,7 +113,6 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in ios_device]
-    #concurrent.futures.wait(futures_ios_cfg)
     futures_ios_log = [executor.submit(
         napalm_ssh,
         'ios',
@@ -120,7 +121,6 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in ios_device]
-    #concurrent.futures.wait(futures_ios_log)
 
     #Multithreading for IOS-XR
     futures_iosxr_cfg = [executor.submit(
@@ -131,7 +131,6 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in iosxr_device]
-    #concurrent.futures.wait(futures_iosxr_cfg)
     futures_iosxr_log = [executor.submit(
         napalm_ssh,
         'ios-xr',
@@ -140,7 +139,6 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in iosxr_device]
-    #concurrent.futures.wait(futures_iosxr_log)
 
     #Multithreading for JUNOS
     futures_junos_cfg = [executor.submit(
@@ -164,11 +162,6 @@ if __name__ == '__main__':
         futures_junos_cfg + futures_junos_log +\
         futures_ios_cfg + futures_iosxr_cfg
     
-    #futures = futures_nxos_cfg + futures_nxos_log +\
-    #    futures_ios_cfg + futures_ios_log +\
-    #    futures_iosxr_cfg + futures_iosxr_log +\
-    #    futures_junos_cfg + futures_junos_log 
-
     concurrent.futures.wait(futures)
 
     futures_ios_log = [executor.submit(
@@ -187,5 +180,11 @@ if __name__ == '__main__':
         username,
         password,
         'log') for node in iosxr_device]
+
     futures = futures_ios_log + futures_iosxr_log
+
     concurrent.futures.wait(futures)
+
+    end_time = datetime.now()
+    total_time = (end_time - start_time).seconds
+    print('\n**************** E N D  O F  T H E  S C R I P T ****************\n')
