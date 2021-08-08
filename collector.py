@@ -148,7 +148,6 @@ if __name__ == '__main__':
         futures_nxos_log + futures_junos_log
     concurrent.futures.wait(futures)
 
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
     futures_ios_log = [executor.submit(
         napalm_ssh,
         'ios',
@@ -176,4 +175,3 @@ if __name__ == '__main__':
     print('  End time : ' + end_time.strftime("%d %b %Y - %H:%M:%S"))
     print('  Total time : ' + str(total_time//60) + ' minute/s and ' + str(total_time%60) + ' second/s')
     print('\n********************************************************************\n')
-
