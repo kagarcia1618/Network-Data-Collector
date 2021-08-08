@@ -34,6 +34,7 @@
         cat > command_list.txt
         ios,cfg,show run
         ```
+        **Note:** Maximum of 10 command lines only for nxos device type
     
     - Secret Key
 
