@@ -125,7 +125,12 @@ if __name__ == '__main__':
         username,
         password,
         'cfg') for node in junos_device]
+
+    futures = futures_nxos_cfg + futures_junos_cfg +\
+        futures_ios_cfg + futures_iosxr_cfg
     
+    concurrent.futures.wait(futures)
+
     futures_nxos_log = [executor.submit(
         nxapi_cli, 
         node,
@@ -161,9 +166,7 @@ if __name__ == '__main__':
         password,
         'log') for node in iosxr_device]
     
-    futures = futures_nxos_cfg + futures_junos_cfg +\
-        futures_ios_cfg + futures_iosxr_cfg +\
-        futures_nxos_log + futures_junos_log +\
+    futures = futures_nxos_log + futures_junos_log +\
         futures_ios_log + futures_iosxr_log
     
     concurrent.futures.wait(futures)
