@@ -85,73 +85,7 @@ if __name__ == '__main__':
     #Deletes all config and log files
     system('rm logs/*.cfg && rm logs/*.log')
 
-    futures_nxos_cfg = [nxapi_cli(
-        node,
-        nxos_cmd_cfg,
-        'cli_show_ascii',
-        username,
-        password,
-        'cfg') for node in nxos_device]
-
-    futures_ios_cfg = [napalm_ssh(
-        'ios',
-        node,
-        ios_cmd_cfg,
-        username,
-        password,
-        'cfg') for node in ios_device]
-
-    futures_iosxr_cfg = [napalm_ssh(
-        'iosxr',
-        node,
-        iosxr_cmd_cfg,
-        username,
-        password,
-        'cfg') for node in iosxr_device]
-
-    futures_junos_cfg = [napalm_ssh(
-        'junos',
-        node,
-        junos_cmd_cfg,
-        username,
-        password,
-        'cfg') for node in junos_device]
-    
-    futures_nxos_log = [nxapi_cli(
-        node,
-        nxos_cmd_log,
-        'cli_show_ascii',
-        username,
-        password,
-        'log') for node in nxos_device]
-
-    futures_junos_log = [napalm_ssh(
-        'junos',
-        node,
-        junos_cmd_log,
-        username,
-        password,
-        'log') for node in junos_device]
-
-    futures_ios_log = [napalm_ssh(
-        'ios',
-        node,
-        ios_cmd_log,
-        username,
-        password,
-        'log') for node in ios_device]
-    futures_iosxr_log = [napalm_ssh(
-        'iosxr',
-        node,
-        ios_cmd_log,
-        username,
-        password,
-        'log') for node in iosxr_device]
-
-#    #Multithreading for NXOS
-#    executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
-#    futures_nxos_cfg = [executor.submit(
-#        nxapi_cli, 
+#    futures_nxos_cfg = [nxapi_cli(
 #        node,
 #        nxos_cmd_cfg,
 #        'cli_show_ascii',
@@ -159,9 +93,7 @@ if __name__ == '__main__':
 #        password,
 #        'cfg') for node in nxos_device]
 #
-#    #Multithreading for IOS
-#    futures_ios_cfg = [executor.submit(
-#        napalm_ssh,
+#    futures_ios_cfg = [napalm_ssh(
 #        'ios',
 #        node,
 #        ios_cmd_cfg,
@@ -169,9 +101,7 @@ if __name__ == '__main__':
 #        password,
 #        'cfg') for node in ios_device]
 #
-#    #Multithreading for IOS-XR
-#    futures_iosxr_cfg = [executor.submit(
-#        napalm_ssh,
+#    futures_iosxr_cfg = [napalm_ssh(
 #        'iosxr',
 #        node,
 #        iosxr_cmd_cfg,
@@ -179,9 +109,7 @@ if __name__ == '__main__':
 #        password,
 #        'cfg') for node in iosxr_device]
 #
-#    #Multithreading for JUNOS
-#    futures_junos_cfg = [executor.submit(
-#        napalm_ssh,
+#    futures_junos_cfg = [napalm_ssh(
 #        'junos',
 #        node,
 #        junos_cmd_cfg,
@@ -189,8 +117,7 @@ if __name__ == '__main__':
 #        password,
 #        'cfg') for node in junos_device]
 #    
-#    futures_nxos_log = [executor.submit(
-#        nxapi_cli, 
+#    futures_nxos_log = [nxapi_cli(
 #        node,
 #        nxos_cmd_log,
 #        'cli_show_ascii',
@@ -198,8 +125,7 @@ if __name__ == '__main__':
 #        password,
 #        'log') for node in nxos_device]
 #
-#    futures_junos_log = [executor.submit(
-#        napalm_ssh,
+#    futures_junos_log = [napalm_ssh(
 #        'junos',
 #        node,
 #        junos_cmd_log,
@@ -207,28 +133,102 @@ if __name__ == '__main__':
 #        password,
 #        'log') for node in junos_device]
 #
-#    futures = futures_nxos_cfg + futures_junos_cfg + futures_ios_cfg + futures_iosxr_cfg +\
-#        futures_nxos_log + futures_junos_log
-#    concurrent.futures.wait(futures)
-#
-#    futures_ios_log = [executor.submit(
-#        napalm_ssh,
+#    futures_ios_log = [napalm_ssh(
 #        'ios',
 #        node,
 #        ios_cmd_log,
 #        username,
 #        password,
 #        'log') for node in ios_device]
-#    concurrent.futures.wait(futures_ios_log)
-#    futures_iosxr_log = [executor.submit(
-#        napalm_ssh,
+#    futures_iosxr_log = [napalm_ssh(
 #        'iosxr',
 #        node,
 #        ios_cmd_log,
 #        username,
 #        password,
 #        'log') for node in iosxr_device]
-#    concurrent.futures.wait(futures_iosxr_log)
+
+    #Multithreading for NXOS
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
+    futures_nxos_cfg = [executor.submit(
+        nxapi_cli, 
+        node,
+        nxos_cmd_cfg,
+        'cli_show_ascii',
+        username,
+        password,
+        'cfg') for node in nxos_device]
+
+    #Multithreading for IOS
+    futures_ios_cfg = [executor.submit(
+        napalm_ssh,
+        'ios',
+        node,
+        ios_cmd_cfg,
+        username,
+        password,
+        'cfg') for node in ios_device]
+
+    #Multithreading for IOS-XR
+    futures_iosxr_cfg = [executor.submit(
+        napalm_ssh,
+        'iosxr',
+        node,
+        iosxr_cmd_cfg,
+        username,
+        password,
+        'cfg') for node in iosxr_device]
+
+    #Multithreading for JUNOS
+    futures_junos_cfg = [executor.submit(
+        napalm_ssh,
+        'junos',
+        node,
+        junos_cmd_cfg,
+        username,
+        password,
+        'cfg') for node in junos_device]
+    
+    futures_nxos_log = [executor.submit(
+        nxapi_cli, 
+        node,
+        nxos_cmd_log,
+        'cli_show_ascii',
+        username,
+        password,
+        'log') for node in nxos_device]
+
+    futures_junos_log = [executor.submit(
+        napalm_ssh,
+        'junos',
+        node,
+        junos_cmd_log,
+        username,
+        password,
+        'log') for node in junos_device]
+
+    futures = futures_nxos_cfg + futures_junos_cfg + futures_ios_cfg + futures_iosxr_cfg +\
+        futures_nxos_log + futures_junos_log
+    concurrent.futures.wait(futures)
+
+    futures_ios_log = [executor.submit(
+        napalm_ssh,
+        'ios',
+        node,
+        ios_cmd_log,
+        username,
+        password,
+        'log') for node in ios_device]
+    concurrent.futures.wait(futures_ios_log)
+    futures_iosxr_log = [executor.submit(
+        napalm_ssh,
+        'iosxr',
+        node,
+        iosxr_cmd_log,
+        username,
+        password,
+        'log') for node in iosxr_device]
+    concurrent.futures.wait(futures_iosxr_log)
 
     end_time = datetime.now()
     total_time = (end_time - start_time).seconds
