@@ -1,4 +1,4 @@
-/venv/*
-/private/*
-__pycache__
+venv/*
+private/*
+__pycache__/*
 logs/*
