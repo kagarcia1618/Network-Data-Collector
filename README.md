@@ -1,12 +1,19 @@
 # Network Data Collector
 
-Network data collector can be used for automated network devices config and logs collection which is then stored as a text files in your local enviroment. There are two data collection types which are `cfg` and `log` mode wherein you can specify your own set of commands base on  these two options. This tool is currently using two different modes of access which is via NXAPI/SSH for NXOS and SSH for IOS, IOS-XR and Junos network devices. [Napalm](https://github.com/napalm-automation/napalm) is used as backend library module for SSH access. The final output will then have two generated text files for each devices for the purpose of easier indexing and lookup. 
+Network data collector can be used for automated network devices config and logs collection which is then stored as a text files in your local enviroment. There are two data collection types which are `cfg` and `log` mode wherein you can specify your own set of commands base on  these two options. 
+
+This tool is currently using two different modes of access which is via:
+1. NXAPI/SSH for NXOS
+2. SSH for IOS, IOS-XR and Junos network devices. 
+
+[Napalm](https://github.com/napalm-automation/napalm) is used as backend library module for SSH access. The final output will then have two generated text files for each devices for the purpose of easier indexing and lookup. 
 
 **Sample Use Case:**
 - Scheduled configuration backup
 - Scheduled device inventory and health checkup
 - Dynamic lookup of hardware module serial number across all network devices using linux grep
 - Dynamic lookup of endpoint mac address across all network devices using linux grep
+- Dynamic lookup of change request ticket in interface descriptions across all network devices using linux grep
 
 **How to use:**
 
