@@ -1,6 +1,6 @@
 # Network Data Collector
 
-Network data collector can be used for automated network devices config and logs collection which is then stored as a text files in your local enviroment. There are two data collection types which are `cfg` and `log` mode wherein you can specify your own set of commands base on  these two options. 
+Network data collector can be used for automated network devices config and logs collection which is then stored as a text files in your local enviroment. There are two data collection types which are `cfg` and `log` mode. You can specify your own set of commands base on  these two options. 
 
 This tool is currently using two different modes of access which is via:
 1. NXAPI/SSH for NXOS
