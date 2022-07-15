@@ -41,7 +41,7 @@ if __name__ == '__main__':
     junos_cmd_log = []
 
     for i in devices:
-        if type(i.primary_ip) != type(None):
+        if type(i.primary_ip) != type(None) and str(i.status) == 'Active':
             if str(i.platform) == 'Cisco NXOS':
                 nxos_devices.append(i)
             elif str(i.platform) == 'Cisco IOS':
