@@ -5,36 +5,30 @@ from collections import OrderedDict
 from library.encrypt import decrypt_message
 from library.nxapi import nxapi_cli
 from library.napalm_ssh import napalm_ssh
-
-def extract(a):
-    """
-    a - exact filename of the data to be extracted
-    """
-    with open(a,'r') as i:
-        return(i.read())
+from library.netbox_api import get_data
+from library.extract import extract
 
 if __name__ == '__main__':
     start_time = datetime.now()
     print('\n**************** S T A R T  O F  T H E  S C R I P T ****************\n')
     #Extract login credentials
-    username = decrypt_message(extract('private/login_credentials.txt').split(',')[0].encode())
-    password = decrypt_message(extract('private/login_credentials.txt').split(',')[1].encode())
+    username = decrypt_message(extract('private/credentials.txt').split(',')[0].encode())
+    password = decrypt_message(extract('private/credentials.txt').split(',')[1].encode())
 
     #temporary storage of the raw data of cli commands
     cmd_raw = extract('private/command_list.txt')
-    #temporary storage of the raw data of the nodes database
-    node_raw = extract('private/device_list.txt')
 
     #parsed command lines
     cmd_list = [ i.split(',') for i in cmd_raw.splitlines() ]
-    #parsed node list
-    node_list = [ i.split(' ') for i in node_raw.splitlines() ]
+
+    #Get device list from netbox
+    devices = get_data()
 
     #Group same type of devices
-    nxos_device = []
-    ios_device = []
-    iosxr_device = []
-    junos_device = []
+    nxos_devices = []
+    ios_devices = []
+    iosxr_devices = []
+    junos_devices = []
 
     #Group same type of commands
     nxos_cmd_cfg = []
@@ -46,15 +40,16 @@ if __name__ == '__main__':
     junos_cmd_cfg = []
     junos_cmd_log = []
 
-    for i in node_list:
-        if i[0] == 'nxos':
-            nxos_device.append(i)
-        elif i[0] == 'ios':
-            ios_device.append(i)
-        elif i[0] == 'ios-xr':
-            iosxr_device.append(i)
-        elif i[0] == 'junos':
-            junos_device.append(i)
+    for i in devices:
+        if type(i.primary_ip) != type(None):
+            if str(i.platform) == 'Cisco NXOS':
+                nxos_devices.append(i)
+            elif str(i.platform) == 'Cisco IOS':
+                ios_devices.append(i)
+            elif str(i.platform) == 'Cisco IOS-XR':
+                iosxr_devices.append(i)
+            elif str(i.platform) == 'Juniper JunOS':
+                junos_devices.append(i)
 
     for i in cmd_list:
         if i[0] == 'nxos':
@@ -94,7 +89,7 @@ if __name__ == '__main__':
         'cli_show_ascii',
         username,
         password,
-        'cfg') for node in nxos_device]
+        'cfg') for node in nxos_devices]
 
     #Multithreading for IOS
     futures_ios_cfg = [executor.submit(
@@ -104,7 +99,7 @@ if __name__ == '__main__':
         ios_cmd_cfg,
         username,
         password,
-        'cfg') for node in ios_device]
+        'cfg') for node in ios_devices]
 
     #Multithreading for IOS-XR
     futures_iosxr_cfg = [executor.submit(
@@ -114,7 +109,7 @@ if __name__ == '__main__':
         iosxr_cmd_cfg,
         username,
         password,
-        'cfg') for node in iosxr_device]
+        'cfg') for node in iosxr_devices]
 
     #Multithreading for JUNOS
     futures_junos_cfg = [executor.submit(
@@ -124,7 +119,7 @@ if __name__ == '__main__':
         junos_cmd_cfg,
         username,
         password,
-        'cfg') for node in junos_device]
+        'cfg') for node in junos_devices]
    
     futures_nxos_log = [executor.submit(
         nxapi_cli, 
@@ -133,7 +128,7 @@ if __name__ == '__main__':
         'cli_show_ascii',
         username,
         password,
-        'log') for node in nxos_device]
+        'log') for node in nxos_devices]
 
     futures_junos_log = [executor.submit(
         napalm_ssh,
@@ -142,7 +137,7 @@ if __name__ == '__main__':
         junos_cmd_log,
         username,
         password,
-        'log') for node in junos_device]
+        'log') for node in junos_devices]
 
     futures_ios_log = [executor.submit(
         napalm_ssh,
@@ -151,7 +146,7 @@ if __name__ == '__main__':
         ios_cmd_log,
         username,
         password,
-        'log') for node in ios_device]
+        'log') for node in ios_devices]
     futures_iosxr_log = [executor.submit(
         napalm_ssh,
         'iosxr',
@@ -159,7 +154,7 @@ if __name__ == '__main__':
         iosxr_cmd_log,
         username,
         password,
-        'log') for node in iosxr_device]
+        'log') for node in iosxr_devices]
     
     futures = futures_nxos_log + futures_junos_log +\
         futures_ios_log + futures_iosxr_log +\
