@@ -10,8 +10,7 @@ def napalm_ssh(driver,node,cli_cmd,username,password,mode):
     '''
     timestamp = datetime.now().strftime("%d%b%Y")
     net_driver = get_network_driver(driver)
-    device = net_driver(node[2], username, password, optional_args={'global_delay_factor': 2, 'secret': password})
-
+    device = net_driver(str(node.primary_ip4).split('/')[0], username, password, optional_args={'global_delay_factor': 2, 'secret': password})
     try:
         device.open()
         output = device.cli(cli_cmd)
