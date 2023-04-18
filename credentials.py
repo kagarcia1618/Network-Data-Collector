@@ -1,3 +1,4 @@
+import os
 from getpass import getpass
 from library.encrypt import generate_key,encrypt_message
 from library.extract import extract
@@ -30,4 +31,9 @@ def main():
     print('Credential and web portal details updated.')
 
 if __name__ == '__main__':
+    LOCAL_PATHS = ['logs', 'private', 'custom_logs']
+    for path in LOCAL_PATHS:
+        if not os.path.exists(path):
+            os.mkdir(path)
+            print(f'[INFO] Created {path} local folder.')
     main()

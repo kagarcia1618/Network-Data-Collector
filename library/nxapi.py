@@ -6,14 +6,24 @@ from library.napalm_ssh import napalm_ssh
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
+def nxapi_cli(node, cli_cmd, cli_type, username, password, mode, custom):
     '''
     node_ip - ip address of the device to be accessed
     cli_cmd - cli command to be executed to the device
     cli_type - nxapi cli access type
-    mode - log file type
+    username - device login username
+    password - device login password
+    mode - file extension type
+    custom - boolean indicator if custom mode network data collection
     '''
-    timestamp = datetime.now().strftime("%d%b%Y")
+    if len(cli_cmd) == 0:
+        return
+    if custom:
+        timestamp = datetime.now().strftime("%d%b%Y-%H%M")
+        directory = 'custom_logs/'
+    else:
+        timestamp = datetime.now().strftime("%d%b%Y")
+        directory = 'logs/'
     url = 'https://{}/ins'.format(str(node.primary_ip4).split('/')[0])
     cli_cmd_str = ' ;'.join(cli_cmd)
     payload = {
@@ -37,7 +47,7 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
             auth=(username,password)
         ).json()
         output = response['ins_api']['outputs']['output']
-        wr_file = open( 'logs/' + node.name + '_' + str(node.primary_ip4).split('/')[0] + '_' + timestamp + '.' + mode, 'w' )
+        wr_file = open( directory + node.name + '_' + str(node.primary_ip4).split('/')[0] + '_' + timestamp + '.' + mode, 'w' )
         if type(output) == list:
             for i in range(len(output)):
                 wr_file.write( output[i]['input'] + '\n' + output[i]['body'] + '\n')
@@ -48,5 +58,5 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode):
     
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as error:
         print(f'  {node.name} {mode} via nxapi data collection failed! Now trying via napalm ssh..')
-        napalm_ssh('nxos_ssh',node,cli_cmd,username,password,mode)
+        napalm_ssh('nxos_ssh', node, cli_cmd, username, password, mode, custom)
         return
