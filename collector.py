@@ -1,6 +1,6 @@
 import concurrent
 import argparse
-from os import system
+from os import system, chdir, mkdir
 from datetime import datetime
 from collections import OrderedDict
 from library.encrypt import decrypt_message
@@ -24,13 +24,14 @@ def multitask(
     ios_devices: list,
     iosxr_devices: list,
     junos_devices: list,
+    folder: str = None,
     custom: bool = False,
 ) -> None:
     '''
     Function for multithreading task execution for different NOS platforms
     '''
     #Multithreading for NXOS
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=8)
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=50)
     futures_nxos_cfg = [executor.submit(
         nxapi_cli, 
         node,
@@ -39,6 +40,7 @@ def multitask(
         username,
         password,
         'cfg',
+        folder,
         custom) for node in nxos_devices]
 
     #Multithreading for IOS
@@ -50,6 +52,7 @@ def multitask(
         username,
         password,
         'cfg',
+        folder,
         custom) for node in ios_devices]
 
     #Multithreading for IOS-XR
@@ -61,6 +64,7 @@ def multitask(
         username,
         password,
         'cfg',
+        folder,
         custom) for node in iosxr_devices]
 
     #Multithreading for JUNOS
@@ -72,6 +76,7 @@ def multitask(
         username,
         password,
         'cfg',
+        folder,
         custom) for node in junos_devices]
    
     futures_nxos_log = [executor.submit(
@@ -82,6 +87,7 @@ def multitask(
         username,
         password,
         'log',
+        folder,
         custom) for node in nxos_devices]
     # futures_nxos_log = [executor.submit(
     #     nxapi_cli, 
@@ -101,6 +107,7 @@ def multitask(
         username,
         password,
         'log',
+        folder,
         custom) for node in junos_devices]
 
     futures_ios_log = [executor.submit(
@@ -111,6 +118,7 @@ def multitask(
         username,
         password,
         'log',
+        folder,
         custom) for node in ios_devices]
     futures_iosxr_log = [executor.submit(
         napalm_ssh,
@@ -120,6 +128,7 @@ def multitask(
         username,
         password,
         'log',
+        folder,
         custom) for node in iosxr_devices]
     
     futures = futures_nxos_log + futures_junos_log +\
@@ -226,7 +235,7 @@ def main(username, password) -> None:
     print('  Total time : ' + str(total_time//60) + ' minute/s and ' + str(total_time%60) + ' second/s')
     print('\n********************************************************************\n')
 
-def custom(username, password, cmd_list, host_list) -> None:
+def custom(username, password, cmd_list, host_list, folder) -> None:
     #Get device list from netbox
     devices = get_data()
     hosts = list()
@@ -304,7 +313,8 @@ def custom(username, password, cmd_list, host_list) -> None:
         ios_devices = ios_devices,
         iosxr_devices = iosxr_devices,
         junos_devices = junos_devices,
-        custom = True
+        folder = folder,
+        custom = True,
     )
 
 if __name__ == '__main__':
@@ -325,11 +335,18 @@ if __name__ == '__main__':
         help='Host list file',
         type = open,
     )
+    parser.add_argument(
+        '--folder',
+        '-f',
+        help='Folder name',
+    )
     args = parser.parse_args()
 
-    if args.command_list and args.host_list:
+    if args.command_list and args.host_list and args.folder:
         host_list = args.host_list.read().splitlines()
         command_list = [ i.split(',') for i in args.command_list.read().splitlines() ]
-        custom(username, password, command_list, host_list)
+        chdir('custom_logs')
+        mkdir(args.folder)
+        custom(username, password, command_list, host_list, args.folder)
     else:
         main(username, password)

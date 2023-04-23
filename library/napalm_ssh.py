@@ -2,7 +2,7 @@ from datetime import datetime
 from napalm import get_network_driver
 from napalm.base.exceptions import ConnectionException
 
-def napalm_ssh(driver, node, cli_cmd, username, password, mode, custom):
+def napalm_ssh(driver, node, cli_cmd, username, password, mode, folder, custom):
     '''
     driver - device napalm network driver
     mgmt_ip - device management ip address
@@ -16,7 +16,7 @@ def napalm_ssh(driver, node, cli_cmd, username, password, mode, custom):
         return
     if custom:
         timestamp = datetime.now().strftime("%d%b%Y-%H%M")
-        directory = 'custom_logs/'
+        directory = f"{folder}/"
     else:
         timestamp = datetime.now().strftime("%d%b%Y")
         directory = 'logs/'

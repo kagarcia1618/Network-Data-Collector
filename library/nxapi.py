@@ -6,7 +6,7 @@ from library.napalm_ssh import napalm_ssh
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def nxapi_cli(node, cli_cmd, cli_type, username, password, mode, custom):
+def nxapi_cli(node, cli_cmd, cli_type, username, password, mode, folder, custom):
     '''
     node_ip - ip address of the device to be accessed
     cli_cmd - cli command to be executed to the device
@@ -20,7 +20,7 @@ def nxapi_cli(node, cli_cmd, cli_type, username, password, mode, custom):
         return
     if custom:
         timestamp = datetime.now().strftime("%d%b%Y-%H%M")
-        directory = 'custom_logs/'
+        directory = f"{folder}/"
     else:
         timestamp = datetime.now().strftime("%d%b%Y")
         directory = 'logs/'
